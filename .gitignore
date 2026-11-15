@@ -1,0 +1,43 @@
+# Environment & Secrets (CRITICAL SECURITY)
+.env
+.env.*
+*.env
+backend/.env
+frontend/.env
+frontend/.env.local
+
+# Database & SQLite files
+*.db
+*.sqlite
+*.sqlite3
+backend/digitick.db
+backend/uploads/
+uploads/
+
+# Node & Frontend dependencies
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+.pnpm-debug.log*
+
+# Python & Pytest
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/__pycache__/
+backend/*/__pycache__/
+.pytest_cache/
+backend/.pytest_cache/
+.venv/
+env/
+venv/
+ENV/
+
+# System & IDE files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
