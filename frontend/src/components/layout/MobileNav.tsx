@@ -16,7 +16,7 @@ export const MobileNav: React.FC<MobileNavProps> = () => {
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-nature-white dark:bg-darknature-sidebar border-t border-nature-border dark:border-darknature-border px-2 py-1.5 flex items-center justify-around select-none">
       <NavLink
-        to="/"
+        to="/dashboard"
         className={({ isActive }) =>
           `flex flex-col items-center justify-center py-1 px-2.5 rounded-lg text-[10px] font-semibold transition-colors ${
             isActive

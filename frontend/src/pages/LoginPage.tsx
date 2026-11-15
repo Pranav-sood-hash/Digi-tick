@@ -25,7 +25,7 @@ export const LoginPage: React.FC = () => {
 
     try {
       await login(email.trim(), password);
-      navigate('/', { replace: true });
+      navigate('/dashboard', { replace: true });
     } catch (err: any) {
       const msg = err.message || 'Invalid email or password';
       setErrorMsg(msg);
@@ -52,7 +52,7 @@ export const LoginPage: React.FC = () => {
         await authApi.register('demo@digitick.com', 'Digitick2026!', 'Demo Shopper');
         await login('demo@digitick.com', 'Digitick2026!');
       }
-      navigate('/');
+      navigate('/dashboard', { replace: true });
     } catch (err: any) {
       setErrorMsg('Could not start demo session');
     } finally {

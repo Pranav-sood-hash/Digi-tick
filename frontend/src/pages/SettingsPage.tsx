@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/common/Button';
@@ -7,6 +8,12 @@ import { Sun, Moon } from 'lucide-react';
 export const SettingsPage: React.FC = () => {
   const { theme, setTheme } = useTheme();
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/', { replace: true });
+  };
 
   return (
     <div className="space-y-6 max-w-3xl mx-auto animate-fadeIn pb-10">
@@ -66,7 +73,7 @@ export const SettingsPage: React.FC = () => {
             Currently logged in as {user?.email}
           </p>
         </div>
-        <Button variant="danger" size="sm" onClick={logout}>
+        <Button variant="danger" size="sm" onClick={handleLogout}>
           Log Out
         </Button>
       </section>

@@ -44,7 +44,7 @@ export const RegisterPage: React.FC = () => {
     setLoading(true);
     try {
       await register(email.trim(), password, fullName.trim());
-      navigate('/', { replace: true });
+      navigate('/dashboard', { replace: true });
     } catch (err: any) {
       setErrorMsg(err.message || 'Registration failed');
     } finally {

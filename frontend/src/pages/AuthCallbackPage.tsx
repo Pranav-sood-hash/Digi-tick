@@ -60,7 +60,7 @@ export const AuthCallbackPage: React.FC = () => {
         setStatus('success');
 
         // Redirect directly to dashboard without bouncing back
-        navigate('/', { replace: true });
+        navigate('/dashboard', { replace: true });
       } catch (err: any) {
         if (!active) return;
         setStatus('error');

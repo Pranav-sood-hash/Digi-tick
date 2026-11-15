@@ -26,7 +26,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   const navigate = useNavigate();
 
   const navItems = [
-    { label: 'Dashboard', path: '/', icon: LayoutDashboard },
+    { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { label: 'My Lists', path: '/lists', icon: CheckSquare },
     { label: 'Scan a List', path: '/scan', icon: ScanLine },
     { label: 'Completed Lists', path: '/completed', icon: Archive },
@@ -37,7 +37,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
 
   const handleLogout = async () => {
     await logout();
-    navigate('/login', { replace: true });
+    navigate('/', { replace: true });
     if (onClose) onClose();
   };
 

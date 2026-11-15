@@ -1,0 +1,13 @@
+export { Navbar } from './Navbar';
+export { Hero } from './Hero';
+export { ProblemSection } from './ProblemSection';
+export { Introduction } from './Introduction';
+export { FeaturesSection } from './FeaturesSection';
+export { HowItWorks } from './HowItWorks';
+export { UseCases } from './UseCases';
+export { ProductDemo } from './ProductDemo';
+export { Comparison } from './Comparison';
+export { PrivacySection } from './PrivacySection';
+export { FAQ } from './FAQ';
+export { FinalCTA } from './FinalCTA';
+export { Footer } from './Footer';

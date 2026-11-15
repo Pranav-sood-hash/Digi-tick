@@ -14,11 +14,14 @@ export default {
           forest: '#1B5E3B',  // Forest Green (Headings & Brand)
           fresh: '#69B578',   // Fresh Green (Secondary Highlights)
           mint: '#E8F5EC',    // Soft Mint (Background Highlights)
+          mintgreen: '#B8E4C5', // Mint Green decorative
           white: '#FFFFFF',   // Pure White
           offwhite: '#F7FAF7',// Secondary Backgrounds
           border: '#E5EAE6',  // Borders and Dividers
           text: '#24352B',    // Primary Typography
           muted: '#718078',   // Secondary Typography
+          darkforest: '#10271B', // Dark sections
+          deepgreen: '#0B1B12',  // Deep Green Hero / Dark
         },
         darknature: {
           bg: '#111A14',        // Main Dark Background
