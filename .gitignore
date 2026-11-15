@@ -1,10 +1,12 @@
 # Environment & Secrets (CRITICAL SECURITY)
 .env
-.env.*
+.env.local
+.env.*.local
 *.env
 backend/.env
 frontend/.env
 frontend/.env.local
+!*.example
 
 # Database & SQLite files
 *.db
