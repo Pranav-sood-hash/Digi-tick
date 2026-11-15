@@ -96,7 +96,7 @@ export const FeaturesSection: React.FC = () => {
                   type="text"
                   value={commaText}
                   onChange={(e) => setCommaText(e.target.value)}
-                  className="w-full text-xs p-3 rounded-xl bg-nature-white dark:bg-nature-card border border-nature-border text-nature-text dark:text-white outline-none focus:border-nature-primary"
+                  className="w-full text-xs p-3 rounded-xl bg-nature-white dark:bg-nature-card border border-nature-border dark:border-nature-forest/40 text-nature-text dark:text-white outline-none focus:border-nature-primary"
                   placeholder="e.g. Milk, Bread, Apples, Eggs"
                 />
                 <button
@@ -116,7 +116,7 @@ export const FeaturesSection: React.FC = () => {
                 {parsedItems.map((item, idx) => (
                   <div
                     key={idx}
-                    className="p-2.5 rounded-xl bg-nature-white dark:bg-nature-card border border-nature-border flex items-center justify-between text-xs"
+                    className="p-2.5 rounded-xl bg-nature-white dark:bg-nature-card border border-nature-border dark:border-nature-forest/40 flex items-center justify-between text-xs"
                   >
                     <div className="flex items-center space-x-2">
                       <span className="w-5 h-5 rounded-md bg-nature-mint text-nature-forest flex items-center justify-center font-bold text-[10px]">
@@ -166,7 +166,7 @@ export const FeaturesSection: React.FC = () => {
               </div>
 
               {/* Extracted Structured Checklist */}
-              <div className="p-4 rounded-2xl bg-nature-white dark:bg-nature-card border border-nature-border space-y-2 text-xs">
+              <div className="p-4 rounded-2xl bg-nature-white dark:bg-nature-card border border-nature-border dark:border-nature-forest/40 space-y-2 text-xs">
                 <div className="flex items-center justify-between pb-1.5 border-b border-nature-border">
                   <span className="font-bold text-[10px] uppercase text-nature-forest dark:text-nature-mint">
                     AI OCR Extracted
@@ -192,7 +192,7 @@ export const FeaturesSection: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-4 p-3 rounded-xl bg-nature-white dark:bg-nature-card border border-nature-border text-[11px] text-nature-forest dark:text-nature-mint flex items-center gap-2">
+            <div className="mt-4 p-3 rounded-xl bg-nature-white dark:bg-nature-card border border-nature-border dark:border-nature-forest/40 text-[11px] text-nature-forest dark:text-nature-mint flex items-center gap-2">
               <ScanLine className="w-4 h-4 text-nature-primary flex-shrink-0" />
               <span>
                 <strong>Review before saving:</strong> You can edit quantities or delete misrecognized items before saving.
@@ -271,7 +271,7 @@ export const FeaturesSection: React.FC = () => {
                   className={`p-3 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
                     item.checked
                       ? 'bg-nature-mint/60 border-nature-primary/30 text-nature-muted'
-                      : 'bg-nature-white dark:bg-nature-card border-nature-border text-nature-forest dark:text-white'
+                      : 'bg-nature-white dark:bg-nature-card border-nature-border dark:border-nature-forest/40 text-nature-forest dark:text-white'
                   }`}
                 >
                   <div className="flex items-center space-x-2.5">
@@ -323,7 +323,7 @@ export const FeaturesSection: React.FC = () => {
               <span className="text-[10px] text-nature-muted">Chronological</span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-nature-white dark:bg-nature-card border border-nature-border flex items-center justify-between text-xs">
+            <div className="p-3.5 rounded-xl bg-nature-white dark:bg-nature-card border border-nature-border dark:border-nature-forest/40 flex items-center justify-between text-xs">
               <div>
                 <h5 className="font-bold text-nature-forest dark:text-white">Weekly Produce & Dairy</h5>
                 <span className="text-[10px] text-nature-muted">Completed on Nov 14 • 8 items</span>
@@ -345,7 +345,7 @@ export const FeaturesSection: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-nature-white dark:bg-nature-card border border-nature-border flex items-center justify-between text-xs opacity-75">
+            <div className="p-3.5 rounded-xl bg-nature-white dark:bg-nature-card border border-nature-border dark:border-nature-forest/40 flex items-center justify-between text-xs opacity-75">
               <div>
                 <h5 className="font-bold text-nature-forest dark:text-white">Monthly Pantry & Staples</h5>
                 <span className="text-[10px] text-nature-muted">Completed on Nov 02 • 15 items</span>
@@ -411,7 +411,7 @@ export const FeaturesSection: React.FC = () => {
             className="lg:col-span-7 bg-nature-offwhite dark:bg-nature-darkforest rounded-3xl p-6 sm:p-8 border border-nature-border dark:border-nature-forest/40 space-y-3"
           >
             {/* Store 1 */}
-            <div className="p-4 rounded-xl bg-nature-white dark:bg-nature-card border border-nature-border text-xs space-y-2">
+            <div className="p-4 rounded-xl bg-nature-white dark:bg-nature-card border border-nature-border dark:border-nature-forest/40 text-xs space-y-2">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-[10px] font-bold uppercase text-nature-primary">
@@ -439,7 +439,7 @@ export const FeaturesSection: React.FC = () => {
             </div>
 
             {/* Store 2 */}
-            <div className="p-4 rounded-xl bg-nature-white dark:bg-nature-card border border-nature-border text-xs space-y-2">
+            <div className="p-4 rounded-xl bg-nature-white dark:bg-nature-card border border-nature-border dark:border-nature-forest/40 text-xs space-y-2">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-[10px] font-bold uppercase text-nature-primary">

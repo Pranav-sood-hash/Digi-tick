@@ -256,7 +256,7 @@ export const ProductDemo: React.FC = () => {
                         className={`w-4 h-4 rounded border flex items-center justify-center ${
                           item.checked
                             ? 'bg-nature-primary border-nature-primary text-white'
-                            : 'border-nature-muted/60 bg-white'
+                            : 'border-nature-muted/60 bg-white dark:bg-nature-darkforest dark:border-nature-forest'
                         }`}
                       >
                         {item.checked && <Check className="w-3 h-3 stroke-[2.5]" />}

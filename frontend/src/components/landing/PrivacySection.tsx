@@ -51,15 +51,15 @@ export const PrivacySection: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
-                className="p-6 rounded-3xl bg-nature-white dark:bg-nature-card border border-nature-border dark:border-nature-forest/30 shadow-2xs hover:shadow-xs transition-all"
+                className="p-6 rounded-3xl bg-white dark:bg-nature-card border border-nature-border dark:border-nature-forest/50 shadow-2xs hover:shadow-xs hover:border-nature-primary/40 dark:hover:border-nature-fresh/60 dark:hover:bg-[#1E4230] transition-all group"
               >
-                <div className="w-10 h-10 rounded-2xl bg-nature-mint dark:bg-nature-deepgreen text-nature-forest dark:text-nature-mint flex items-center justify-center mb-4">
+                <div className="w-10 h-10 rounded-2xl bg-nature-mint text-nature-forest dark:bg-nature-forest dark:text-nature-mintgreen flex items-center justify-center mb-4 transition-transform group-hover:scale-105">
                   <Icon className="w-5 h-5 stroke-[2.2]" />
                 </div>
                 <h3 className="text-base font-bold text-nature-forest dark:text-white mb-2">
                   {pt.title}
                 </h3>
-                <p className="text-xs text-nature-muted dark:text-nature-mint/70 leading-relaxed">
+                <p className="text-xs text-nature-muted dark:text-[#C5D9CC] leading-relaxed">
                   {pt.description}
                 </p>
               </motion.div>

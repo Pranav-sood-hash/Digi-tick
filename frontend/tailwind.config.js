@@ -22,6 +22,7 @@ export default {
           muted: '#718078',   // Secondary Typography
           darkforest: '#10271B', // Dark sections
           deepgreen: '#0B1B12',  // Deep Green Hero / Dark
+          card: '#183526',       // Elevated Dark Forest Card
         },
         darknature: {
           bg: '#111A14',        // Main Dark Background

@@ -344,7 +344,7 @@ export const Hero: React.FC = () => {
                               className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${
                                 item.checked
                                   ? 'bg-nature-primary border-nature-primary text-white'
-                                  : 'border-nature-muted/50 bg-nature-white'
+                                  : 'border-nature-muted/50 bg-nature-white dark:bg-nature-deepgreen dark:border-nature-forest'
                               }`}
                             >
                               {item.checked && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}

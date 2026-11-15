@@ -106,7 +106,7 @@ export const HowItWorks: React.FC = () => {
                   <span className="text-xs font-black text-nature-primary bg-nature-mint dark:bg-nature-deepgreen px-2 py-0.5 rounded-md">
                     {step.number}
                   </span>
-                  <div className="w-9 h-9 rounded-xl bg-nature-mint text-nature-forest flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-nature-mint text-nature-forest dark:bg-nature-forest dark:text-nature-mintgreen flex items-center justify-center">
                     <Icon className="w-4 h-4 stroke-[2.2]" />
                   </div>
                 </div>
@@ -118,7 +118,7 @@ export const HowItWorks: React.FC = () => {
                   {step.tagline}
                 </span>
 
-                <p className="text-xs text-nature-muted dark:text-nature-mint/70 leading-relaxed mb-4">
+                <p className="text-xs text-nature-muted dark:text-[#C5D9CC] leading-relaxed mb-4">
                   {step.description}
                 </p>
 
