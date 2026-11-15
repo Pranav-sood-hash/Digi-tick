@@ -15,7 +15,6 @@ export const AuthCallbackPage: React.FC = () => {
   const flow = (searchParams.get('flow') || 'login') as 'login' | 'signup';
   const [status, setStatus] = useState<'processing' | 'success' | 'error'>('processing');
   const [errorMessage, setErrorMessage] = useState('');
-  const [isNotRegistered, setIsNotRegistered] = useState(false);
 
   useEffect(() => {
     if (hasExecutedRef.current) return;
@@ -24,61 +23,108 @@ export const AuthCallbackPage: React.FC = () => {
 
     const handleOAuthCallback = async () => {
       try {
+        // 1. Detect OAuth errors from query parameters or hash fragment
+        const searchError = searchParams.get('error_description') || searchParams.get('error');
+        const hash = window.location.hash;
+        let hashError = '';
+        if (hash) {
+          const hashParams = new URLSearchParams(hash.replace(/^#/, ''));
+          hashError = hashParams.get('error_description') || hashParams.get('error') || '';
+        }
+
+        const oauthError = searchError || hashError;
+        if (oauthError) {
+          throw new Error(decodeURIComponent(oauthError.replace(/\+/g, ' ')));
+        }
+
         if (!supabase) {
           throw new Error('Supabase client is not initialized');
         }
+        const client = supabase;
 
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) throw sessionError;
-
-        if (!session || !session.user || !session.user.email) {
-          throw new Error('No verified email received from Google authentication.');
+        // 2. If PKCE authorization code is present in query, exchange it
+        const code = searchParams.get('code');
+        if (code) {
+          try {
+            await client.auth.exchangeCodeForSession(code);
+          } catch (codeErr: any) {
+            console.warn('PKCE code exchange error:', codeErr);
+          }
         }
 
-        const email = session.user.email;
-        const fullName =
-          session.user.user_metadata?.full_name ||
-          session.user.user_metadata?.name ||
-          email.split('@')[0];
-        const avatarUrl =
-          session.user.user_metadata?.avatar_url ||
-          session.user.user_metadata?.picture;
+        // 3. Helper function to authenticate session with backend
+        const processSession = async (session: any): Promise<boolean> => {
+          if (!session?.user?.email) return false;
 
-        // Verify with backend gatekeeper
-        const result = await authApi.googleAuth({
-          email,
-          full_name: fullName,
-          avatar_url: avatarUrl,
-          sub: session.user.id,
-          flow,
+          const email = session.user.email;
+          const fullName =
+            session.user.user_metadata?.full_name ||
+            session.user.user_metadata?.name ||
+            email.split('@')[0];
+          const avatarUrl =
+            session.user.user_metadata?.avatar_url ||
+            session.user.user_metadata?.picture;
+
+          const result = await authApi.googleAuth({
+            email,
+            full_name: fullName,
+            avatar_url: avatarUrl,
+            sub: session.user.id,
+            flow,
+          });
+
+          if (!active) return true;
+
+          // Establish session in context and localStorage
+          setSession(result.access_token, result.user);
+          setStatus('success');
+
+          // Smooth redirect to dashboard
+          setTimeout(() => {
+            navigate('/dashboard', { replace: true });
+          }, 300);
+          return true;
+        };
+
+        // 4. Check initial session from getSession()
+        const { data: { session: initialSession }, error: sessionError } = await client.auth.getSession();
+        if (sessionError) throw sessionError;
+
+        if (initialSession && (await processSession(initialSession))) {
+          return;
+        }
+
+        // 5. If not immediately ready, listen for onAuthStateChange with timeout
+        let resolved = false;
+        const { data: authListener } = client.auth.onAuthStateChange(async (event, session) => {
+          if (resolved) return;
+          if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
+            resolved = true;
+            await processSession(session);
+          }
         });
 
-        if (!active) return;
+        // 6. Graceful timeout: wait up to 4 seconds for session resolution
+        setTimeout(async () => {
+          if (resolved || !active) return;
+          authListener?.subscription?.unsubscribe();
 
-        // Immediately establish session in context
-        setSession(result.access_token, result.user);
-        setStatus('success');
+          // Final attempt to get session
+          const { data: { session: finalSession } } = await client.auth.getSession();
+          if (finalSession && (await processSession(finalSession))) {
+            return;
+          }
 
-        // Redirect directly to dashboard without bouncing back
-        navigate('/dashboard', { replace: true });
+          if (active) {
+            setStatus('error');
+            setErrorMessage('Unable to retrieve verified session from Google. Please try signing in again.');
+          }
+        }, 4000);
+
       } catch (err: any) {
         if (!active) return;
         setStatus('error');
-        const detail = err.message || 'Authentication failed';
-        setErrorMessage(detail);
-
-        if (
-          detail.includes("doesn't exist") ||
-          detail.includes('sign up first') ||
-          detail.includes('No Google account found')
-        ) {
-          setIsNotRegistered(true);
-        }
-
-        // Clean up ephemeral Supabase session if rejected
-        try {
-          if (supabase) await supabase.auth.signOut();
-        } catch {}
+        setErrorMessage(err.message || 'Authentication failed. Please try again.');
       }
     };
 
@@ -87,7 +133,7 @@ export const AuthCallbackPage: React.FC = () => {
     return () => {
       active = false;
     };
-  }, [flow, navigate, setSession]);
+  }, [flow, navigate, searchParams, setSession]);
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4 bg-nature-offwhite dark:bg-darknature-bg font-sans">
@@ -100,7 +146,7 @@ export const AuthCallbackPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-nature-forest dark:text-darknature-text tracking-tight">
             Digitick
           </h1>
-          <p className="text-xs text-nature-muted dark:text-darknature-muted mt-0.5">
+          <p className="text-xs text-nature-muted dark:text-darknature-muted">
             Google Authentication Engine
           </p>
         </div>
@@ -113,7 +159,7 @@ export const AuthCallbackPage: React.FC = () => {
               Verifying Google Account...
             </h3>
             <p className="text-xs text-nature-muted dark:text-darknature-muted">
-              Confirming registration credentials with Supabase security guard.
+              Confirming credentials and synchronizing your shopping lists.
             </p>
           </div>
         )}
@@ -131,14 +177,14 @@ export const AuthCallbackPage: React.FC = () => {
           </div>
         )}
 
-        {/* Error / Account Not Found State */}
+        {/* Error State */}
         {status === 'error' && (
           <div className="bg-nature-white dark:bg-darknature-card rounded-2xl p-6 border border-nature-border dark:border-darknature-border space-y-4 animate-fadeIn">
             <div className="flex items-start space-x-3 text-rose-800 dark:text-rose-200">
               <AlertCircle className="w-5 h-5 text-rose-600 dark:text-rose-400 flex-shrink-0 mt-0.5" />
               <div>
                 <h3 className="text-sm font-bold text-nature-forest dark:text-darknature-text mb-1">
-                  {isNotRegistered ? 'Account Not Registered' : 'Authentication Rejected'}
+                  Authentication Issue
                 </h3>
                 <p className="text-xs text-rose-700 dark:text-rose-300 leading-relaxed">
                   {errorMessage}
@@ -147,32 +193,21 @@ export const AuthCallbackPage: React.FC = () => {
             </div>
 
             <div className="pt-2 border-t border-nature-border dark:border-darknature-border flex flex-col space-y-2">
-              {isNotRegistered ? (
-                <Button
-                  variant="primary"
-                  size="md"
-                  onClick={() => navigate('/register')}
-                  className="w-full"
-                >
-                  Create Account
-                </Button>
-              ) : (
-                <Button
-                  variant="primary"
-                  size="md"
-                  onClick={() => navigate('/login')}
-                  className="w-full"
-                >
-                  Go to Sign In
-                </Button>
-              )}
               <Button
-                variant="outline"
-                size="sm"
+                variant="primary"
+                size="md"
                 onClick={() => navigate('/login')}
                 className="w-full"
               >
-                Back to Login
+                Try Sign In Again
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/register')}
+                className="w-full"
+              >
+                Create Account with Email
               </Button>
             </div>
           </div>
@@ -181,3 +216,5 @@ export const AuthCallbackPage: React.FC = () => {
     </div>
   );
 };
+
+export default AuthCallbackPage;

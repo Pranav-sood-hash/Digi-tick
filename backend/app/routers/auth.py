@@ -96,23 +96,26 @@ def google_auth(payload: GoogleAuthRequest, db: Session = Depends(get_db)):
             pass
 
     verified_email = verified_email.strip().lower()
+    if not verified_email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="A valid email address is required for Google authentication."
+        )
+
     user = db.query(User).filter(func.lower(User.email) == verified_email).first()
 
-    if payload.flow == "login":
-        # Google Login workflow:
-        # Check whether an existing Digitick account is registered through Google.
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Your account doesn't exist in Digitick yet. Please sign up first."
-            )
-
-        # Check authentication provider: prevent unauthorized linking with email/password accounts
-        if user.auth_provider != "google":
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="This account was registered with email and password. Automatic account linking is not permitted. Please log in with your password."
-            )
+    if user:
+        # Existing account: update avatar or name if missing, then log in seamlessly
+        updated = False
+        if not user.avatar_url and avatar_url:
+            user.avatar_url = avatar_url
+            updated = True
+        if (not user.full_name or user.full_name == user.email.split("@")[0]) and full_name:
+            user.full_name = full_name
+            updated = True
+        if updated:
+            db.commit()
+            db.refresh(user)
 
         token = create_access_token(user.id, user.email)
         return {
@@ -120,26 +123,8 @@ def google_auth(payload: GoogleAuthRequest, db: Session = Depends(get_db)):
             "token_type": "bearer",
             "user": user
         }
-
-    elif payload.flow == "signup":
-        # Google Sign-Up workflow:
-        if user:
-            if user.auth_provider == "google":
-                # Already registered with Google: log them in seamlessly
-                token = create_access_token(user.id, user.email)
-                return {
-                    "access_token": token,
-                    "token_type": "bearer",
-                    "user": user
-                }
-            else:
-                # Registered with another provider: do not auto-link
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="An account with this email already exists using email and password. Automatic account linking is not permitted."
-                )
-
-        # Create new Digitick account with Google as auth_provider
+    else:
+        # New account: automatically create Digitick account and log in
         new_user = User(
             email=verified_email,
             password_hash=None,
@@ -151,11 +136,10 @@ def google_auth(payload: GoogleAuthRequest, db: Session = Depends(get_db)):
             db.add(new_user)
             db.commit()
             db.refresh(new_user)
-            # Automatically create default shopping list once
+            # Automatically initialize default shopping list
             create_default_shopping_list(db, new_user.id)
         except IntegrityError:
             db.rollback()
-            # Concurrent sign-up request in development/StrictMode: fetch the created user
             new_user = db.query(User).filter(func.lower(User.email) == verified_email).first()
             if not new_user:
                 raise HTTPException(
@@ -169,12 +153,6 @@ def google_auth(payload: GoogleAuthRequest, db: Session = Depends(get_db)):
             "token_type": "bearer",
             "user": new_user
         }
-
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid flow '{payload.flow}'. Expected 'login' or 'signup'."
-        )
 
 @router.get("/me", response_model=UserResponse)
 def get_profile(current_user: User = Depends(get_current_user)):

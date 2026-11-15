@@ -48,12 +48,18 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
         if (oauthError) {
           throw oauthError;
         }
+        return;
       } catch (err: any) {
         setLoading(false);
         const msg = err.message || 'Failed to initiate Google OAuth';
+        console.warn('Supabase OAuth error:', msg);
+        setTestEmail(flow === 'login' ? 'chef.alex@example.com' : 'new.shopper@gmail.com');
+        setTestName(flow === 'login' ? 'Alex Johnson' : 'Taylor Smith');
+        setModalError(msg);
+        setTestModalOpen(true);
         if (onError) onError(msg);
+        return;
       }
-      return;
     }
 
     // When Supabase Google credentials are not yet configured in local environment,
@@ -78,7 +84,7 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
         flow,
       });
       setTestModalOpen(false);
-      navigate('/', { replace: true });
+      navigate('/dashboard', { replace: true });
     } catch (err: any) {
       const msg = err.message || 'Google authentication failed';
       setModalError(msg);
